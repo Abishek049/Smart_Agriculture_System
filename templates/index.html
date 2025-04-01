@@ -11,17 +11,25 @@
             text-align: center;
             padding: 20px;
         }
-        form {
+        .container {
             background: white;
             padding: 20px;
             display: inline-block;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
         }
-        input {
-            margin: 10px;
+        .sensor-data {
+            margin: 15px 0;
+            text-align: left;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        input, select {
+            margin: 10px 5px;
             padding: 8px;
-            width: 80%;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
@@ -32,6 +40,7 @@
             border: none;
             cursor: pointer;
             border-radius: 4px;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #218838;
@@ -41,23 +50,185 @@
             font-size: 18px;
             font-weight: bold;
         }
+        .status {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .error {
+            color: #dc3545;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .connection-panel {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            text-align: left;
+        }
+        .panel-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .btn-connect {
+            background-color: #007bff;
+        }
+        .btn-connect:hover {
+            background-color: #0069d9;
+        }
+        .btn-reset {
+            background-color: #dc3545;
+            color: white;
+            margin-left: 5px;
+        }
+        .btn-reset:hover {
+            background-color: #c82333;
+        }
+        .btn-predict {
+            width: 80%;
+            margin: 20px auto;
+            padding: 12px;
+            font-size: 16px;
+        }
+        .advanced-options {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+        .advanced-options summary {
+            cursor: pointer;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .advanced-options div {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h2>Crop Recommendation System</h2>
+        
+        <!-- Connection Status -->
+        {% if connected %}
+            <div class="status connected">
+                Arduino Connected - Receiving Data from {{ arduino_port }}
+            </div>
+        {% else %}
+            <div class="status disconnected">
+                Arduino Disconnected or No Data
+            </div>
+            
+            <!-- Connection Help Panel -->
+            <div class="connection-panel">
+                <div class="panel-title">Connection Troubleshooting</div>
+                <form method="POST">
+                    <select name="port">
+                        {% for port in available_ports %}
+                            <option value="{{ port }}" {% if arduino_port == port %}selected{% endif %}>{{ port }}</option>
+                        {% endfor %}
+                        {% if not available_ports %}
+                            <option disabled>No ports available</option>
+                        {% endif %}
+                    </select>
+                    <button type="submit" name="connect_port" value="1" class="btn-connect">Connect</button>
+                    <button type="button" id="reset-btn" class="btn-reset">Reset Port</button>
+                </form>
+                
+                <ul style="font-size: 14px; margin-top: 10px;">
+                    <li>Make sure Arduino is connected to your computer</li>
+                    <li>Try a different USB port</li>
+                    <li>Close any other programs that might be using the Arduino</li>
+                    <li>Make sure your Arduino is running the correct sketch</li>
+                </ul>
+                
+                <details class="advanced-options">
+                    <summary>Advanced Options</summary>
+                    <div>
+                        <p>If you're getting "Access denied" errors, try these steps:</p>
+                        <ol>
+                            <li>Close Arduino IDE or any other program using the serial port</li>
+                            <li>Physically unplug the Arduino and plug it back in</li>
+                            <li>Try running the Flask app as administrator</li>
+                            <li>Try the "Reset Port" button above</li>
+                            <li>Restart your computer if all else fails</li>
+                        </ol>
+                    </div>
+                </details>
+            </div>
+        {% endif %}
+        
+        <!-- Sensor Data Display -->
+        <div class="sensor-data">
+            <h3>Current Sensor Readings:</h3>
+            <p>Temperature: <strong>{{ temperature|default('N/A', true) }}°C</strong></p>
+            <p>Humidity: <strong>{{ humidity|default('N/A', true) }}%</strong></p>
+        </div>
 
-    <h2>Crop Recommendation System</h2>
-    <form method="POST">
-        <input type="text" name="temperature" value="{{ temperature }}" placeholder="Temperature (°C)" readonly>
-        <input type="text" name="humidity" value="{{ humidity }}" placeholder="Humidity (%)" readonly>
-        <br>
-        <button type="submit">Predict Crop</button>
-    </form>
+        <!-- Prediction Form -->
+        <form method="POST">
+            <button type="submit" name="predict" value="1" class="btn-predict">Predict Recommended Crop</button>
+        </form>
 
-    {% if prediction %}
-        <p class="result">Recommended Crop: <strong>{{ prediction }}</strong></p>
-    {% elif error %}
-        <p class="result" style="color: red;">Error: {{ error }}</p>
-    {% endif %}
+        <!-- Results Display -->
+        {% if prediction %}
+            <div class="result" style="color: #28a745;">
+                <h3>Recommended Crop:</h3>
+                <p style="font-size: 24px;">{{ prediction }}</p>
+            </div>
+        {% endif %}
+        
+        {% if error %}
+            <div class="error">
+                Error: {{ error }}
+            </div>
+        {% endif %}
+    </div>
 
+    <script>
+        // Reset port button functionality
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            const port = document.querySelector('select[name="port"]').value;
+            
+            fetch('/reset_connection', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'port=' + encodeURIComponent(port)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to reset connection: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        });
+        
+        // Auto-refresh status every 15 seconds if not connected
+        {% if not connected %}
+        setTimeout(function() {
+            window.location.reload();
+        }, 15000);
+        {% endif %}
+    </script>
 </body>
 </html>
