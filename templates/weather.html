@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="weather-app">
+            <header>
+                <h1>Weather Forecast</h1>
+                <div class="search-box">
+                    <input type="text" id="city" placeholder="Enter city name..." value="Chennai">
+                    <button onclick="getWeather()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <main>
+                <div class="current-weather">
+                    <div class="weather-icon-container">
+                        <img id="weather-icon" src="https://img.icons8.com/ios-filled/50/partly-cloudy-night--v1.png" title="rain icons" alt="Weather Icon">
+                    </div>
+                    
+                    <div class="weather-details">
+                        <div id="temp-div" class="temperature"></div>
+                        <div id="weather-info" class="conditions"></div>
+                    </div>
+                </div>
+                
+                <div class="forecast-section">
+                    <h2>Hourly Forecast</h2>
+                    <div id="hourly-forecast" class="hourly-container"></div>
+                </div>
+            </main>
+            
+            <footer>
+                <p>Weather data provided by OpenWeather</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

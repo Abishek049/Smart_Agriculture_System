@@ -4,231 +4,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crop Recommendation System</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            display: inline-block;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 90%;
-        }
-        .sensor-data {
-            margin: 15px 0;
-            text-align: left;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-        }
-        input, select {
-            margin: 10px 5px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .status {
-            margin-bottom: 15px;
-            padding: 12px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        .connected {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .disconnected {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .error {
-            color: #dc3545;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        .connection-panel {
-            margin: 15px 0;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            text-align: left;
-        }
-        .panel-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .btn-connect {
-            background-color: #007bff;
-        }
-        .btn-connect:hover {
-            background-color: #0069d9;
-        }
-        .btn-reset {
-            background-color: #dc3545;
-            color: white;
-            margin-left: 5px;
-        }
-        .btn-reset:hover {
-            background-color: #c82333;
-        }
-        .btn-predict {
-            width: 80%;
-            margin: 20px auto;
-            padding: 12px;
-            font-size: 16px;
-        }
-        .advanced-options {
-            margin-top: 15px;
-            text-align: left;
-            font-size: 14px;
-        }
-        .advanced-options summary {
-            cursor: pointer;
-            color: #007bff;
-            font-weight: bold;
-        }
-        .advanced-options div {
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            margin-top: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Crop Recommendation System</h2>
-        
-        <!-- Connection Status -->
-        {% if connected %}
-            <div class="status connected">
-                Arduino Connected - Receiving Data from {{ arduino_port }}
-            </div>
-        {% else %}
-            <div class="status disconnected">
-                Arduino Disconnected or No Data
-            </div>
-            
-            <!-- Connection Help Panel -->
-            <div class="connection-panel">
-                <div class="panel-title">Connection Troubleshooting</div>
-                <form method="POST">
-                    <select name="port">
-                        {% for port in available_ports %}
-                            <option value="{{ port }}" {% if arduino_port == port %}selected{% endif %}>{{ port }}</option>
-                        {% endfor %}
-                        {% if not available_ports %}
-                            <option disabled>No ports available</option>
-                        {% endif %}
-                    </select>
-                    <button type="submit" name="connect_port" value="1" class="btn-connect">Connect</button>
-                    <button type="button" id="reset-btn" class="btn-reset">Reset Port</button>
-                </form>
+    <div class="page-wrapper">
+        <div class="container">
+            <header class="header">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="title-container">
+                    <h1>Crop Recommendation System</h1>
+                    <p class="subtitle">Smart Farming Assistant</p>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <!-- Connection Status -->
+                <section class="status-section">
+                    {% if connected %}
+                        <div class="status-card connected">
+                            <div class="status-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="status-details">
+                                <h3>Arduino Connected</h3>
+                                <p>Receiving data from {{ arduino_port }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="status-card disconnected">
+                            <div class="status-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="status-details">
+                                <h3>Arduino Disconnected</h3>
+                                <p>No data being received</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </section>
                 
-                <ul style="font-size: 14px; margin-top: 10px;">
-                    <li>Make sure Arduino is connected to your computer</li>
-                    <li>Try a different USB port</li>
-                    <li>Close any other programs that might be using the Arduino</li>
-                    <li>Make sure your Arduino is running the correct sketch</li>
-                </ul>
-                
-                <details class="advanced-options">
-                    <summary>Advanced Options</summary>
-                    <div>
-                        <p>If you're getting "Access denied" errors, try these steps:</p>
-                        <ol>
-                            <li>Close Arduino IDE or any other program using the serial port</li>
-                            <li>Physically unplug the Arduino and plug it back in</li>
-                            <li>Try running the Flask app as administrator</li>
-                            <li>Try the "Reset Port" button above</li>
-                            <li>Restart your computer if all else fails</li>
-                        </ol>
+                <!-- Sensor Data Display -->
+                <section class="sensor-section">
+                    <h2 class="section-header">
+                        <i class="fas fa-microchip"></i> Sensor Readings
+                    </h2>
+                    <div class="sensor-cards">
+                        <div class="sensor-card">
+                            <div class="sensor-icon temperature-icon">
+                                <i class="fas fa-temperature-high"></i>
+                            </div>
+                            <div class="sensor-info">
+                                <h3>Temperature</h3>
+                                <div class="value">{{ temperature|default('N/A', true) }}<span class="unit">°C</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="sensor-card">
+                            <div class="sensor-icon humidity-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="sensor-info">
+                                <h3>Humidity</h3>
+                                <div class="value">{{ humidity|default('N/A', true) }}<span class="unit">%</span></div>
+                            </div>
+                        </div>
                     </div>
-                </details>
-            </div>
-        {% endif %}
-        
-        <!-- Sensor Data Display -->
-        <div class="sensor-data">
-            <h3>Current Sensor Readings:</h3>
-            <p>Temperature: <strong>{{ temperature|default('N/A', true) }}°C</strong></p>
-            <p>Humidity: <strong>{{ humidity|default('N/A', true) }}%</strong></p>
+                </section>
+
+                <!-- Prediction Form -->
+                <section class="prediction-section">
+                    <form method="POST" class="prediction-form">
+                        <button type="submit" name="predict" value="1" class="btn-predict">
+                            <i class="fas fa-seedling"></i> Predict Recommended Crop
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Results Display -->
+                {% if prediction %}
+                    <section class="result-section">
+                        <div class="result-card">
+                            <div class="result-header">
+                                <i class="fas fa-leaf"></i>
+                                <h2>Recommended Crop</h2>
+                            </div>
+                            <div class="result-content">
+                                <div class="result-value">{{ prediction }}</div>
+                                <div class="result-description">
+                                    <p>This recommendation is based on current sensor readings and optimal growing conditions for your region.</p>
+                                </div>
+                                
+                                <!-- Market Price Information -->
+                                <div class="market-price-container" id="market-price-container">
+                                    <h3><i class="fas fa-chart-line"></i> Current Market Price</h3>
+                                    <div id="price-loading">
+                                        <i class="fas fa-spinner fa-spin"></i> Loading price data...
+                                    </div>
+                                    <div id="price-content" style="display: none;">
+                                        <div class="price-display">
+                                            <span class="price-value" id="price-value"></span>
+                                            <span class="price-unit" id="price-unit"></span>
+                                        </div>
+                                        <div class="price-trend" id="price-trend"></div>
+                                        <div class="price-source" id="price-source"></div>
+                                    </div>
+                                    <div id="price-error" style="display: none;">
+                                        <div class="price-unavailable">
+                                            <i class="fas fa-exclamation-circle"></i> 
+                                            <span id="error-message">Unable to fetch market price data</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
+            </main>
+            
+            <footer class="footer">
+                <p>© 2025 Smart Farming Technologies | Crop Recommendation System</p>
+            </footer>
         </div>
-
-        <!-- Prediction Form -->
-        <form method="POST">
-            <button type="submit" name="predict" value="1" class="btn-predict">Predict Recommended Crop</button>
-        </form>
-
-        <!-- Results Display -->
-        {% if prediction %}
-            <div class="result" style="color: #28a745;">
-                <h3>Recommended Crop:</h3>
-                <p style="font-size: 24px;">{{ prediction }}</p>
-            </div>
-        {% endif %}
-        
-        {% if error %}
-            <div class="error">
-                Error: {{ error }}
-            </div>
-        {% endif %}
     </div>
 
     <script>
-        // Reset port button functionality
-        document.getElementById('reset-btn').addEventListener('click', function() {
-            const port = document.querySelector('select[name="port"]').value;
-            
-            fetch('/reset_connection', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'port=' + encodeURIComponent(port)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert('Failed to reset connection: ' + data.error);
-                }
-            })
-            .catch(error => {
-                alert('Error: ' + error);
-            });
+        // Fetch market price data when prediction is available
+        {% if prediction %}
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Prediction:', "{{ prediction }}");  // Debugging line
+            fetchMarketPrice("{{ prediction }}");
         });
         
-        // Auto-refresh status every 15 seconds if not connected
-        {% if not connected %}
-        setTimeout(function() {
-            window.location.reload();
-        }, 15000);
+        function fetchMarketPrice(crop) {
+            // Show loading state
+            document.getElementById('price-loading').style.display = 'block';
+            document.getElementById('price-content').style.display = 'none';
+            document.getElementById('price-error').style.display = 'none';
+            
+            // Fetch crop price from the local JSON server using the query parameter approach
+            const API_URL = `http://localhost:4000/crops?name=${crop}`;
+            
+            console.log('API URL:', API_URL);  // Debugging line
+            
+            fetch(API_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch price data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle case if the data is an array and extract the first matching crop
+                    const cropData = data.length > 0 ? data[0] : null;
+    
+                    if (cropData) {
+                        // Hide loading, show content
+                        document.getElementById('price-loading').style.display = 'none';
+                        document.getElementById('price-content').style.display = 'block';
+                        
+                        // Display the price data
+                        document.getElementById('price-value').textContent = `₹${cropData.price_per_kg_inr.toFixed(2)}`;
+                        document.getElementById('price-unit').textContent = `per kg`;
+                        
+                    } else {
+                        throw new Error('Crop not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching price data:', error);
+                    
+                    // Show error message
+                    document.getElementById('price-loading').style.display = 'none';
+                    document.getElementById('price-error').style.display = 'block';
+                    document.getElementById('error-message').textContent = 'Unable to fetch market price data. Please try again later.';
+                });
+        }
         {% endif %}
     </script>
+    
+    
 </body>
 </html>

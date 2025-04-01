@@ -14,32 +14,33 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" crossorigin href="{{ url_for('static', filename='css/main.css') }}" />
 </head>
 
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="index.html">Farm<span>Assistant</span></a>
+            <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">Farm<span>Assistant</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Home</a>
+                        <a class="nav-link active" href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="http://127.0.0.1:5000">Crop Recommendation</a>
+                        <a class="nav-link" href="{{ url_for('index') }}">Crop Recommendation</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="weather.html">Weather</a>
+                        <a class="nav-link" href="{{ url_for('weather') }}">Weather</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+    
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -54,7 +55,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block">
-                    <img src="/api/placeholder/600/400" alt="Farm illustration" class="img-fluid rounded hero-image">
+                    <img src="{{ url_for('static', filename='images/farm_02.jpg') }}" alt="Farm illustration" class="img-fluid rounded hero-image">
                 </div>
             </div>
         </div>
@@ -85,7 +86,7 @@
                                 <li><i class="fas fa-check-circle"></i> Climate-based suggestions</li>
                                 <li><i class="fas fa-check-circle"></i> Seasonal crop planning</li>
                             </ul>
-                            <a href="http://127.0.0.1:5000" class="btn btn-feature mt-3">Analyze Your Field</a>
+                            <a href="{{ url_for('index') }}" class="btn btn-feature mt-3">Analyze Your Field</a>
                         </div>
                     </div>
                 </div>
@@ -104,7 +105,7 @@
                                 <li><i class="fas fa-check-circle"></i> Precipitation tracking</li>
                                 <li><i class="fas fa-check-circle"></i> Temperature alerts</li>
                             </ul>
-                            <a href="weather.html" class="btn btn-feature mt-3">Check Weather</a>
+                            <a href="{{ url_for('weather') }}" class="btn btn-secondary">Check Weather</a>
                         </div>
                     </div>
                 </div>
@@ -118,7 +119,7 @@
             <h2>Ready to optimize your farm?</h2>
             <p class="mb-4">Start using our tools today and see the difference in your yields.</p>
             <div class="d-flex justify-content-center">
-                <a href="http://127.0.0.1:5000" class="btn btn-light me-3">Crop Analysis</a>
+                <a href="{{ url_for('index') }}" class="btn btn-light me-3">Crop Analysis</a>
                 <a href="weather.html" class="btn btn-outline-light">Weather Data</a>
             </div>
         </div>
@@ -136,7 +137,7 @@
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
                         <li><a href="index.html">Home</a></li>
-                        <li><a href="http://127.0.0.1:5000">Crop Recommendation</a></li>
+                        <li><a href="{{ url_for('index') }}">Crop Recommendation</a></li>
                         <li><a href="weather.html">Weather</a></li>
                     </ul>
                 </div>

@@ -1,0 +1,44 @@
+{
+  "crops": [
+    {
+      "name": "Rice",
+      "price_per_kg_inr": 35.08
+    },
+    {
+      "name": "Barley",
+      "price_per_kg_inr": 30.45
+    },
+    {
+      "name": "Chickpea",
+      "price_per_kg_inr": 45.60
+    },
+    {
+      "name": "Groundnut",
+      "price_per_kg_inr": 80.95
+    },
+    {
+      "name": "Sugarcane",
+      "price_per_kg_inr": 20.10
+    },
+    {
+      "name": "Sunflower",
+      "price_per_kg_inr": 115.25
+    },
+    {
+      "name": "Mustard",
+      "price_per_kg_inr": 90.50
+    },
+    {
+      "name": "Cotton",
+      "price_per_kg_inr": 150.30
+    },
+    {
+      "name": "Maize",
+      "price_per_kg_inr": 25.40
+    },
+    {
+      "name": "Wheat",
+      "price_per_kg_inr": 32.70
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import joblib
 import json
 
 # Load dataset
-data = pd.read_csv("crop_data_temperature_humidity.csv")  # Ensure the dataset contains Temperature, Humidity, pH, Rainfall, and CropName columns.
+data = pd.read_csv("large_crop_data.csv")  # Ensure the dataset contains Temperature, Humidity, pH, Rainfall, and CropName columns.
 
 # Feature selection
 X = data[['Temperature', 'Humidity']]
@@ -20,6 +20,6 @@ model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 # Save model
-joblib.dump(model, 'crop_recommendation_model_dht.pkl')
+joblib.dump(model, 'large_crop_data_model.pkl')
 
 print("Model trained and saved successfully!")
