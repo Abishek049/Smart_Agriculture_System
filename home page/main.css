@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+.maincont {
+    width: 100vw; /* Full width of viewport */
+    height: 100vh; /* Full height */
+    display: flex; /* Side by side layout */
+}
+
+.cropcotainer, .weathercontainer {
+    width: 50vw;  /* Each takes half of the screen */
+    height: 50vh; /* Full height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cropcotainer {
+    background-color: rgb(76, 86, 123);
+}
+
+.weathercontainer {
+    background-color: rgb(117, 149, 88);    
+}
+
+.crop, .weather {
+    margin: 0; /* Remove extra margin */
+    text-align: center;
+}

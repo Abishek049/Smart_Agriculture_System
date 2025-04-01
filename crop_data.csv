@@ -1,0 +1,11 @@
+Temperature,Humidity,pH,Rainfall,CropName
+30,70,6.5,120,Rice
+25,60,5.8,80,Wheat
+28,50,6.8,100,Maize
+32,65,6.2,150,Sugarcane
+27,55,5.5,90,Cotton
+22,45,6.0,60,Barley
+20,40,6.5,50,Pulses
+35,80,6.8,200,Banana
+26,50,5.9,70,Millet
+30,75,7.0,130,Coffee
